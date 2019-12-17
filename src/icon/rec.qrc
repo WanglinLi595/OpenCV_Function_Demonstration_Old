@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>act_quit_triggered.ico</file>
+        <file>act_load_img_triggered.gif</file>
+    </qresource>
+</RCC>
