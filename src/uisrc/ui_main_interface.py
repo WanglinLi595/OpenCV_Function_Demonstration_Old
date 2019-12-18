@@ -1,16 +1,6 @@
-#!/usr/bin/env python
-# coding=utf-8
-'''
-@描述: 
-@版本: V1_0_0
-@作者: LiWanglin
-@创建时间: Do not edit
-@最后编辑人: LiWanglin
-@最后编辑时间: Do not Edit
-'''
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'e:\opencv_image_process\opencv_image_process_V_1_0_0\uisrc\ui_main_interface.ui'
+# Form implementation generated from reading ui file 'e:\OpenCV_Function_Demonstration\src\uisrc\ui_main_interface.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -31,25 +21,31 @@ class UiMainInterface(object):
         ui_main_interface.setSizePolicy(sizePolicy)
         self.centralwidget = QtWidgets.QWidget(ui_main_interface)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.vertical_layout = QtWidgets.QVBoxLayout()
+        self.vertical_layout.setObjectName("vertical_layout")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
         self.lb_image_info = QtWidgets.QLabel(self.centralwidget)
         self.lb_image_info.setText("")
         self.lb_image_info.setObjectName("lb_image_info")
-        self.verticalLayout.addWidget(self.lb_image_info)
-        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.horizontalLayout.addWidget(self.lb_image_info)
+        self.btn_roi_ok = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_roi_ok.setObjectName("btn_roi_ok")
+        self.horizontalLayout.addWidget(self.btn_roi_ok)
+        self.vertical_layout.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2.addLayout(self.vertical_layout)
         self.table_view = QtWidgets.QTableView(self.centralwidget)
         self.table_view.setObjectName("table_view")
-        self.horizontalLayout.addWidget(self.table_view)
+        self.horizontalLayout_2.addWidget(self.table_view)
         self.tree_widget = QtWidgets.QTreeWidget(self.centralwidget)
         self.tree_widget.setObjectName("tree_widget")
         self.tree_widget.headerItem().setText(0, "1")
-        self.horizontalLayout.addWidget(self.tree_widget)
-        self.horizontalLayout.setStretch(0, 5)
-        self.horizontalLayout.setStretch(1, 5)
-        self.horizontalLayout.setStretch(2, 1)
+        self.horizontalLayout_2.addWidget(self.tree_widget)
+        self.horizontalLayout_2.setStretch(0, 4)
+        self.horizontalLayout_2.setStretch(1, 4)
+        self.horizontalLayout_2.setStretch(2, 1)
         ui_main_interface.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(ui_main_interface)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 824, 26))
@@ -90,6 +86,7 @@ class UiMainInterface(object):
     def retranslateUi(self, ui_main_interface):
         _translate = QtCore.QCoreApplication.translate
         ui_main_interface.setWindowTitle(_translate("ui_main_interface", "MainWindow"))
+        self.btn_roi_ok.setText(_translate("ui_main_interface", "确定感兴趣区域"))
         self.menuFile.setTitle(_translate("ui_main_interface", "文件"))
         self.menuabout.setTitle(_translate("ui_main_interface", "关于"))
         self.toolBar.setWindowTitle(_translate("ui_main_interface", "toolBar"))

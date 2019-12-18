@@ -6,13 +6,15 @@
 @作者: LiWanglin
 @创建时间: 2019.12.12
 @最后编辑人: LiWanglin
-@最后编辑时间: 2019.12.15
+@最后编辑时间: 2019.12.18
 '''
 import cv2
 
+import numpy as np
+
 from PyQt5.QtWidgets import QFileDialog, QGraphicsPixmapItem, QGraphicsScene, QTreeWidgetItem, QGraphicsView, QLabel
 from PyQt5.QtGui import QImage, QPixmap, QStandardItem, QPainter
-from PyQt5.QtCore import QCoreApplication, QTranslator, pyqtSignal, QPoint
+from PyQt5.QtCore import QCoreApplication, QTranslator, pyqtSignal, QPoint, Qt
 
 from enum import Enum
 
@@ -32,6 +34,7 @@ class ModifyQGraphicsView(QGraphicsView):
 
     """
     mouse_move = pyqtSignal(QPoint)     # 定义一个鼠标移动信号
+    mouse_clicked = pyqtSignal(QPoint)  # 定义一个鼠标点击信号
 
     def mouseMoveEvent(self, event): 
         '''鼠标移动事件
@@ -51,6 +54,24 @@ class ModifyQGraphicsView(QGraphicsView):
         self.mouse_move.emit(point)    #发射信号
         super().mouseMoveEvent(event)
 
+    def mousePressEvent(self, event):
+        '''鼠标点击事件
+
+        鼠标点击事件
+
+        @参数说明: 
+            point：当前鼠标所在的坐标点
+
+        @返回值: 
+            无
+
+        @注意: 
+            无
+        '''  
+        if(event.button() == Qt.LeftButton):
+            point = event.pos()
+            self.mouse_clicked.emit(point)      #发射信号     
+        super().mousePressEvent(event)
 
 
 class TreeItemType(Enum):
@@ -170,7 +191,9 @@ def add_data_to_table_view(table_model, table_data, table_col, table_row):
     for i in range(table_col):
         for j in range(table_row): 
             temp_date = QStandardItem(str(table_data[i, j]))
-            table_model.setItem(i, j, temp_date)
+            # 设置单元格居中
+            temp_date.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            table_model.setItem(i, j, temp_date)    # 在单元格中添加数据
 
 def draw_background_image(widget, background_image):
     '''绘制窗体的背景图片
@@ -226,3 +249,32 @@ def init_status_bar(statusbar, class_name="", text_left="", text_right=""):
     status_label_right.setText(text)
 
     return status_label_left, status_label_right
+
+def select_irregular_roi(image, range_point):
+    '''选取不规则的感兴趣区域
+
+    选取不规则的感兴趣区域
+
+    @参数说明: 
+
+
+    @返回值: 
+
+
+    @注意: 
+        无
+    '''
+    # 将传进来的range_point修改为适应cv2.fillPoly参数pts的格式
+    range_point_num = len(range_point)
+    range_roi = np.empty([range_point_num, 2], dtype=np.int32)
+    for i in  range(range_point_num):
+        range_roi[i] = np.asarray(range_point[i])
+         
+    # 获取图像的长和宽
+    image_h, image_w = image.shape[:2]
+
+    mask = np.zeros((image_h, image_w), dtype=np.uint8)     # 生成掩膜版
+    cv2.fillPoly(mask, [range_roi], (255), 8, 0)            # 确定掩膜版区域
+    result = cv2.bitwise_and(image, image, mask=mask)       # 生成ROI图像
+    
+    return result   # 返回结果

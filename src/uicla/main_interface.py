@@ -57,9 +57,10 @@ class MainInterface(QMainWindow):
         self.__preprocessing_image_w = 0        # 用来保存预处理图片的宽
         self.__preprocessing_image_shape = []   # 用来保存预处理图片的维度
         self.class_name = "MainInterface"       # 用来保存类名
+        self.__image_roi = []                   # 用来保存杆兴趣区域
         self.graphcis_view = fun.ModifyQGraphicsView(self)  # 创建graphcis_view，用来显示图片
  
-        self.ui.verticalLayout.addWidget(self.graphcis_view)        # 对graphcis_view进行布局
+        self.ui.vertical_layout.addWidget(self.graphcis_view)        # 对graphcis_view进行布局
 
         # 设置主界面标题
         text = self._translate(self.class_name, "OpenCV函数演示")
@@ -167,7 +168,6 @@ class MainInterface(QMainWindow):
         # 获取图片的长和宽
         self.__preprocessing_image_h, self.__preprocessing_image_w = self.__preprocessing_image.shape[:2]
         
-        # TODO:单元格可以根据数据宽度自动调整大小
         # 设置tab_view的行数列数
         self.item_model = QStandardItemModel(self.__preprocessing_image_h, self.__preprocessing_image_w, self)
         self.select_model = QItemSelectionModel(self.item_model)
@@ -178,6 +178,8 @@ class MainInterface(QMainWindow):
         item_or_row = QAbstractItemView.SelectItems         # 项选则模式
         self.ui.table_view.setSelectionBehavior(item_or_row)    # 单元格选择
         self.ui.table_view.setAlternatingRowColors(True)        # 设置交替行颜色
+        # 根据数据调节单元格大小
+        self.ui.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         # TODO:使用多线程同时绘图和显示图片数据， 暂时有问题 
         # th_1 = threading.Thread(target=fun.add_data_to_table_view, args=(self.item_model, self.__preprocessing_image, 
@@ -195,6 +197,7 @@ class MainInterface(QMainWindow):
         # 在GraphicsView绘制图像
         self.scen, self.gr_temp_item = fun.dispaly_image_in_graphics_view(self.__preprocessing_image, self.graphcis_view)
         self.graphcis_view.mouse_move.connect(self.slot_mouse_move)   #鼠标移动
+        self.graphcis_view.mouse_clicked.connect(self.slot_mouse_clicked)
         # 要想实现mouseMoveEvent，则需要先设置setMouseTrack(true)，直接得到监听事件。
         # 若是setMouseTrack(false),只有鼠标按下才会有mouseMove监听事件响应。
         self.graphcis_view.setMouseTracking(True)       
@@ -229,5 +232,54 @@ class MainInterface(QMainWindow):
         else:
             self.ui.lb_image_info.setText("")           # 鼠标不在图片里面时，ui.lb_image_info.什么都不显示
 
+    def slot_mouse_clicked(self, point):
+        '''显示鼠标点击时确定的ROI
 
+        显示鼠标点击时确定的ROI
 
+        @参数说明: 
+            point：当前鼠标的坐标点
+
+        @返回值: 
+            无
+
+        @注意: 
+            无
+        '''
+        point = self.graphcis_view.mapToScene(point)          # 将视图中的一个坐标变换为场景的坐标
+        point = self.gr_temp_item.mapFromScene(point)          # 将场景中的一个点映射本图形项的坐标系
+
+        temp_point = [int(point.x()), int(point.y())]          # 将传进来的point转化为列表形式
+
+        self.__image_roi.append(temp_point)         # 将传进来的点，添加到 __image_roi里面  
+        # TODO:显示点击的点
+        if(len(self.__image_roi) > 1):              # 将点连成线,显示选取范围
+            result = cv2.line(self.__preprocessing_image, tuple(self.__image_roi[-1]), 
+                        tuple(self.__image_roi[-2]), (255, 255, 255), 2)
+            fun.dispaly_image_in_graphics_view(result, self.graphcis_view)
+
+    @pyqtSlot()
+    def on_btn_roi_ok_clicked(self):
+        '''确定ROI
+
+        确定ROI
+
+        @参数说明: 
+            无
+
+        @返回值: 
+            无
+
+        @注意: 
+            无
+        '''
+        if(len(self.__image_roi) > 2):                  # 要大于两个点才会有确定ROI区域
+            # 确定感兴趣区域
+            result = fun.select_irregular_roi(self.__preprocessing_image, self.__image_roi)
+            # 在self.graphcis_view重新绘图
+            fun.dispaly_image_in_graphics_view(result, self.graphcis_view)
+            # 跟新item_model显示数据
+            fun.add_data_to_table_view(self.item_model, result, self.__preprocessing_image_h, self.__preprocessing_image_w)
+            self.__image_roi = []
+        else: 
+            return
