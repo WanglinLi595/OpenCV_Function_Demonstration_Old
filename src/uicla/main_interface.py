@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (QMainWindow, QFileDialog, QMessageBox, QGraphicsSce
                             QTreeWidgetItem, QAbstractItemView, QHeaderView)
 from PyQt5.QtCore import (QCoreApplication, QTranslator, pyqtSlot, QItemSelectionModel, Qt, pyqtSignal,
                             QPoint, QEvent)
-from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem
+from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel, QStandardItem, QIcon
 
 from enum import Enum
 
@@ -65,6 +65,8 @@ class MainInterface(QMainWindow):
         # 设置主界面标题
         text = self._translate(self.class_name, "OpenCV函数演示")
         self.setWindowTitle(text)
+        # 设置图标
+        self.setWindowIcon(QIcon('./icon/logo.png'))
 
         self.showMaximized()                   # 设置窗口初始显示为全屏显示
 

@@ -19,6 +19,8 @@ class UiMainInterface(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(ui_main_interface.sizePolicy().hasHeightForWidth())
         ui_main_interface.setSizePolicy(sizePolicy)
+        ui_main_interface.setIconSize(QtCore.QSize(40, 40))
+        ui_main_interface.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.centralwidget = QtWidgets.QWidget(ui_main_interface)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
