@@ -1,3 +1,7 @@
+![](https://img.shields.io/badge/version-v1.0-orange)
+![](https://img.shields.io/badge/author-LWL-brightgreen)
+[![](https://img.shields.io/badge/license-MIT-green)](https://github.com/WanglinLi595/OpenCV_Function_Demonstration/blob/master/LICENSE)
+
 # OpenCV函数演示
 ## 项目简介：
 此项目是为了清晰的演示OpenCV图像处理的过程。通过一个个的OpenCV函数演示，让人清楚的明白OpenCV函数的使用。另外在观察图片时，不仅能看到图片的本身，更能看到图片所对应的数据，更加直白反应图像处理的结果。
